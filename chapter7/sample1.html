@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Clarifaiサンプルデモ</title>
+</head>
+<body>
+  <div>
+    <h1>Clarifaiサンプルデモ</h1>
+
+    <!-- ブラウザーから画像を読み込むためのボタン -->
+    <input id="btn" type="file"/>
+  </div>
+
+  <!-- 選択された画像を表示する -->
+  <img id="image" src="" width="500"/>
+
+  <!-- 認識・予測結果を表示する -->
+  <h2 id="text"></h2>
+  <ul id="info"></ul>
+  
+  <!-- ClarifaiのJavaScriptライブラリーを読み込む -->
+  <script src="https://sdk.clarifai.com/js/clarifai-latest.js"></script>
+  <script>
+    // ボタン要素の取得
+    const btn = document.getElementById('btn');
+
+    // 結果を画面に表示する
+    const showResult = response => { }
+
+    // 学習済みモデルで画像を認識・予測する
+    const startEvent = e => {
+      // FileReaderオブジェクトのインスタンスを作成
+      const reader = new FileReader();
+
+      // 画像ファイルをBase64形式に変換する
+      reader.readAsDataURL(btn.files[0]);  
+
+      // 画像の変換が完了してから行う処理
+      reader.onload = () => {
+        const key = '*************';
+        const modelID = 'aaa03c23b3724a16a56b629203edc62c';
+        const app = new Clarifai.App({apiKey: key});
+        const img = document.getElementById('image');
+
+        img.src = reader.result;
+
+        app.models.predict({id: modelID, language: 'ja'}, reader.result.split(',')[1])
+        .then(response => {
+            // showResult(response);
+          console.log(response);
+        })
+      }
+    }
+
+    // ボタンのイベント処理
+    btn.addEventListener('change', startEvent);
+  </script>
+</body>
+</html>
