@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <title>サンプルデモ</title>
+   <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>サンプルデモ</h1>
+
+    <!-- スマホの画像ファイルを読み込むためのボタン -->
+    <input id="btn" type="file"><br/>
+
+    <div id="imgBox"></div>
+    <h2 id="label"></h2>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+    <script>
+      // ボタン、div、h2要素を取得する
+      const btn = document.getElementById('btn');
+      const imgBox = document.getElementById('imgBox');
+      const label = document.getElementById('label');
+
+      // 自身の機械学習モデルのURLを設定する
+      const tmURL = "https://teachablemachine.withgoogle.com/models/********/";
+
+      let model;
+
+      // ボタンをクリックしたときの処理
+      const startEvent = async () => {
+        // 機械学習モデルを読み込む
+        model = await tmImage.load(tmURL+'model.json', tmURL+'metadata.json');
+
+        // img要素の生成
+        const img = document.createElement('img');
+
+        img.width = '250'; // 画像の幅
+        img.height = '250'; // 画像の高さ
+
+        // 画像データにアクセスできるURLを生成＆設定
+        img.src = window.URL.createObjectURL(btn.files[0]);
+
+        // 画像の読み込みが完了したときの処理
+        img.onload = async () => {
+          // 選択した画像ファイルを画面に表示する
+          imgBox.appendChild(img);
+
+          // 生成したURLをメモリーから解放する
+          window.URL.revokeObjectURL(img.src);
+
+          // 画像を機械学習モデルで認識・予測する
+          await predict(img);
+        }
+      }
+
+      // 機械学習モデルの認識・予測処理
+      const predict = async image => {
+        // 受け取ったimg要素を機械学習モデルに読み込ませる
+        const prediction = await model.predict(image);
+
+        for (let i = 0; i < model.getTotalClasses(); i++) {
+            const name = prediction[i].className;
+            const value = prediction[i].probability.toFixed(2);
+
+            if(value > 0.85) label.textContent = `これは${name}です！`;
+        }
+      }
+
+      // 画像ファイルを選択したときの処理
+      btn.addEventListener('change', startEvent);
+    </script>
+  </body>
+</html>
