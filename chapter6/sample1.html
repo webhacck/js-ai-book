@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Nanonetsサンプルデモ</title>
+</head>
+<body>
+  <div>
+    <h1>Nanonetsサンプルデモ</h1>
+    <input id="btn" type="file"/>
+  </div>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    // ボタン要素の取得
+    const btn = document.getElementById('btn');
+
+    // 結果に応じて画像・枠線を表示する
+    const showResult = json => { }
+
+    // 学習モデルで画像を認識・予測する
+    const startEvent = () => {
+      const url = 'https://app.nanonets.com/api/v2/ObjectDetection/Model/*****************/LabelFile/';
+      const key = window.btoa('**********');
+
+      const data = new FormData();
+
+      data.append('file', btn.files[0]);
+
+      fetch(url, {
+        // オプションを設定する
+        method: 'POST',
+        body: data,
+        headers: {'Authorization': 'Basic ' + key}
+      })
+      .then(data => data.json())
+      .then(json => console.log(json));
+    }
+
+    // ボタンのイベント処理
+    btn.addEventListener('change', startEvent);
+  </script>
+</body>
+</html>
