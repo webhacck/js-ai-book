@@ -84,3 +84,7 @@
 
 ## 著者
 まさとらん（ [https://twitter.com/0310lan](https://twitter.com/0310lan) ）
+
+　
+
+本書籍に関して分からないことあれば[フォーム](https://forms.gle/1U9jhByWuWQkL6VQ8)から問い合わせできます。
